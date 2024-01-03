@@ -45,3 +45,17 @@ Route::group(['middleware'=>'auth:api'],function(){
 	});
 	
 });
+
+Route::group(['middleware'=>'auth:api'],function(){
+
+	Route::group(['prefix'=>'/guests'],function(){
+		Route::put('/{guest}/allergies',[GuestsController::class,'updateAllergies'])->name('api.invite.guests.update');
+		Route::put('/{guest}/attendance',[GuestsController::class,'updateAttendance'])->name('api.invite.guests.attendance');
+	});
+
+	Route::group(['prefix'=>'/events'],function(){
+		Route::get('/',[EventsController::class,'index'])->name('api.invite.events.index');
+		Route::get('/{event}',[EventsController::class,'show'])->name('api.invite.events.show');
+	});
+	
+});
