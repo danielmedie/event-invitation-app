@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\GuestsController;
 use App\Http\Controllers\Admin\InvitationsController;
+use App\Http\Controllers\Admin\EventsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +37,11 @@ Route::group(['middleware'=>'auth:api'],function(){
 		Route::post('/',[InvitationsController::class,'store'])->name('api.invitations.store');
 		Route::put('/{invitation}',[InvitationsController::class,'update'])->name('api.invitations.update');
 		Route::delete('/{invitation}',[InvitationsController::class,'destroy'])->name('api.invitations.destroy');
+	});
+
+	Route::group(['prefix'=>'/events'],function(){
+		Route::get('/',[EventsController::class,'index'])->name('api.events.index');
+		Route::get('/{event}',[EventsController::class,'show'])->name('api.events.show');
 	});
 	
 });
