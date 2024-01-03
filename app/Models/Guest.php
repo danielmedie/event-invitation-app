@@ -15,6 +15,7 @@ class Guest extends Model
 		'name'				=> '',
 		'name_tag'			=> null,
 		'invitation_id'		=> null,
+		'attending'			=> null,
 		'allergies'			=> null,
 	];
 

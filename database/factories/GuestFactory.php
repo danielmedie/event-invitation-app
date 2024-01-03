@@ -30,6 +30,7 @@ class GuestFactory extends Factory
         return [
 			'name'				=> ($firstName = $this->faker->firstName()).' '.($this->faker->lastName()),
 			'invitation_id'		=> null,
+			'attending'			=> $this->faker->boolean(75) ? $this->faker->boolean(50) : null,
 			'name_tag'			=> $this->faker->boolean(75) ? $firstName : null,
 			'allergies'			=> $this->faker->boolean(30) ? $this->faker->paragraphs(2,true) : null,
         ];

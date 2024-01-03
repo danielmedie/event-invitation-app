@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('name_tag')->nullable();
             $table->unsignedBigInteger('invitation_id')->nullable();
+            $table->boolean('attending')->nullable();
             $table->mediumText('allergies')->nullable();
             $table->timestamps();
 
