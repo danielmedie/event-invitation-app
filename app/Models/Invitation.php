@@ -16,6 +16,16 @@ class Invitation extends Model
 		'message'		=> null
 	];
 
+	public static function booted()
+    {
+        static::creating(function(Invitation $invitation)
+        {
+			if(!$invitation->code) {
+				$invitation->code = str()->random(6);
+			}
+        });
+    }
+
 	public function guests(){
 		return $this->hasMany(Guest::class);
     }

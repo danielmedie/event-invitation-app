@@ -28,7 +28,7 @@ class InvitationFactory extends Factory
     public function definition(): array
     {
         return [
-			'code'				=> Str::random(16),
+			'code'				=> Str::random(6),
 			'message'			=> $this->faker->boolean(80) ? $this->faker->paragraphs(1,true) : null,
         ];
     }
