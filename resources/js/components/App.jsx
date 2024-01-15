@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import './App.css';
+// import LoginComponent from './LoginComponent';
+import GuestRSVP from './GuestRSVP';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -57,6 +59,10 @@ function App() {
               </div>
             </div>
           </Route>
+          <Route path="/rsvp"> 
+            {isLoggedIn ? <GuestRSVP /> : <Redirect to="/login" />}
+           </Route>
+          <Redirect to="/login" />
         </Switch>
       </Router>
     </div>
