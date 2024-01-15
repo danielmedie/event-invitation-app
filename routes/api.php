@@ -91,5 +91,9 @@ Route::group([
 	// Update Guest Allergies
 	Route::put('/guests/{guest}', [ActiveInvite\GuestsController::class, 'update'])
 		->name('api.invite.guests.update');
+
+	// Update Guest Attendance
+	Route::put('/rsvp/{guest}/attendance',[ActiveInvite\RsvpController::class,'update'])
+		->name('api.invite.guests.attendance');
 	
 });
