@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 
 // Load Axios
-import './bootstrap';
+import './api/axios';
 
 /**
  * Next, we will create a fresh React component instance and attach it to
