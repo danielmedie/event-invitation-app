@@ -3,11 +3,17 @@
 use App\Http\Controllers\ActiveInvite;
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\Auth;
+use App\Models\Invitation;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [Auth\AuthenticatedSessionController::class, 'store'])
 	->name('login');
 
+Route::group(['prefix' => 'invite'], function(){
+	Route::post('/login', [Auth\AuthenticatedInvitationSessionController::class, 'store'])
+		->name('invite.login');
+	Route::get('/login/show', [Auth\AuthenticatedInvitationSessionController::class, 'show'])
+		->name('invite.login.show');
 });
 
 Route::group(['middleware'=>'auth:web'],function(){
@@ -53,12 +59,26 @@ Route::group(['middleware'=>'auth:web'],function(){
 	
 });
 
-Route::group(['middleware'=>'auth:api'],function(){
+// Invitation
+Route::group([
+	'prefix' => 'invite', 
+	'middleware' => [
+		'auth:api',
+		'abilities:'.implode(',',Invitation::TOKEN_ABILITIES)
+	] 
+],function(){
+	
+	// API Active Invite Ping
+	Route::get('ping/invite', function() {return 'pong';})
+		->name('api.test.invite.ping');
 
 	Route::group(['prefix'=>'/guests'],function(){
 		Route::put('/{guest}/allergies',[GuestsController::class,'updateAllergies'])->name('api.invite.guests.update');
 		Route::put('/{guest}/attendance',[GuestsController::class,'updateAttendance'])->name('api.invite.guests.attendance');
 	});
+	// Logout
+	Route::post('/logout', [Auth\AuthenticatedInvitationSessionController::class, 'destroy'])
+		->name('invite.logout');
 
 	Route::group(['prefix'=>'/events'],function(){
 		Route::get('/',[EventsController::class,'index'])->name('api.invite.events.index');

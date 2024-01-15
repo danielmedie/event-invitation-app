@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Models\Invitation;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -36,27 +37,28 @@ abstract class TestCase extends BaseTestCase
 	protected function makeUserAndAuthenticate($args = [])
 	{
 		$user = $this->makeUser($args);
-		$this->actingAs($user, 'api');
+		$this->actingAs($user, 'web');
 		return $user;
 	}
 
-	// /**
-	//  * Create a Invitation and Authenticate with Token
-	//  * @return  \App\Models\Invitation
-	//  */
-	// protected function makeInvitationAndAuthenticate(array|Invitation $args = [])
-	// {
-	// 	if($args instanceof Invitation) {
-	// 		$invitation = $args;
-	// 	} else {
-	// 		$invitation = Invitation::create(array_merge(['code' => 'CODE'],$args));
-	// 	}
+	/**
+	 * Create a Invitation and Authenticate with Token
+	 * @return  \App\Models\Invitation
+	 */
+	protected function makeInvitationAndAuthenticate(array|Invitation $args = [])
+	{
+		if($args instanceof Invitation) {
+			$invitation = $args;
+		} else {
+			$invitation = Invitation::create(array_merge(['code' => 'CODE'],$args));
+		}
 
-	// 	$token = app(AuthenticateInvitation::class)->createTokenAndSaveCookie($invitation);
-	// 	$this->withToken($token->plainTextToken);
-
-	// 	app('auth')->shouldUse('sanctum');
+		$token = Invitation::createNewAccessToken($invitation);
 		
-	// 	return $invitation;
-	// }
+		$this->withToken($token->plainTextToken);
+
+		app('auth')->shouldUse('sanctum');
+		
+		return $invitation;
+	}
 }
