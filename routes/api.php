@@ -72,10 +72,6 @@ Route::group([
 	Route::get('ping/invite', function() {return 'pong';})
 		->name('api.test.invite.ping');
 
-	Route::group(['prefix'=>'/guests'],function(){
-		Route::put('/{guest}/allergies',[GuestsController::class,'updateAllergies'])->name('api.invite.guests.update');
-		Route::put('/{guest}/attendance',[GuestsController::class,'updateAttendance'])->name('api.invite.guests.attendance');
-	});
 	// Logout
 	Route::post('/logout', [Auth\AuthenticatedInvitationSessionController::class, 'destroy'])
 		->name('invite.logout');
@@ -84,5 +80,20 @@ Route::group([
 		Route::get('/',[EventsController::class,'index'])->name('api.invite.events.index');
 		Route::get('/{event}',[EventsController::class,'show'])->name('api.invite.events.show');
 	});
+	// Get Event
+	Route::get('/event',[ActiveInvite\EventsController::class,'show'])
+		->name('api.invite.event.show');
+
+	// Update Guest Allergies
+	Route::get('/guests',[ActiveInvite\GuestsController::class,'index'])
+		->name('api.invite.guests.index');
+
+	// Get Single Guest on invitation 
+	Route::get('/guests/{guest}',[ActiveInvite\GuestsController::class,'show'])
+		->name('api.invite.guests.show');
+
+	// Update Guest Allergies
+	Route::put('/guests/{guest}', [ActiveInvite\GuestsController::class, 'update'])
+		->name('api.invite.guests.update');
 	
 });
