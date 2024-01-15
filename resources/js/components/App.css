@@ -1,0 +1,48 @@
+/* App.css */
+
+body {
+    background-color: #f8f9fa; /* Bakgrundsfärg för hela sidan */
+}
+
+.container {
+    margin-top: 50px; /* Avstånd från toppen av sidan */
+}
+
+
+.my-title {
+    font-size: 2.5em; /* Storleken på titeln */
+    margin-bottom: 20px; /* Avstånd under titeln */
+    color: #333; /* Textfärg för titeln */
+    text-align: center; /* Centrera titeln */
+}
+
+.my-card {
+    text-align: center;
+    margin-bottom: 30px; /* Avstånd mellan kortet och nästa element */
+    background-color: #fff; /* Bakgrundsfärg för kortet */
+    border-radius: 8px; /* Rundade kanter för kortet */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Skugga för kortet */
+}
+
+.my-card-header {
+    background-color: #007bff; /* Bakgrundsfärg för kortets header */
+    color: #fff; /* Textfärg för kortets header */
+    padding: 15px; /* Utfyllnad för header */
+    border-radius: 8px 8px 0 0; /* Rundade kanter för header */
+}
+
+.my-label {
+    color: #333; /* Textfärg för etiketten */
+    font-weight: bold; /* Fetstil för etiketten */
+}
+
+.my-input {
+    width: 100%; /* Bredden på input-fältet */
+    margin-bottom: 15px; /* Avstånd mellan input-fältet och knappen */
+}
+
+.my-button {
+    width: 10%; /* Bredden på knappen */
+    background-color: #007bff;
+    border-radius: 3px;
+}
