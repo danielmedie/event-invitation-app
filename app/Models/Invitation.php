@@ -13,6 +13,7 @@ class Invitation extends Model
 
 	protected $attributes = [
 		'code'			=> '',
+		'to'			=> '',
 		'message'		=> null
 	];
 

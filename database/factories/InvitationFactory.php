@@ -29,6 +29,7 @@ class InvitationFactory extends Factory
     {
         return [
 			'code'				=> Str::random(6),
+			'to'				=> $this->faker->name,
 			'message'			=> $this->faker->boolean(80) ? $this->faker->paragraphs(1,true) : null,
         ];
     }
