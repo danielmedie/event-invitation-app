@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\Admin\GuestsController;
 use App\Http\Controllers\Admin\InvitationsController;
 use App\Http\Controllers\Admin\EventsController;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,11 +24,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(['middleware'=>'auth:api'],function(){
 
 	Route::group(['prefix'=>'/guests'],function(){
-		Route::get('/',[GuestsController::class,'index'])->name('api.guests.index');
-		Route::get('/{guest}',[GuestsController::class,'show'])->name('api.guests.show');
-		Route::post('/',[GuestsController::class,'store'])->name('api.guests.store');
-		Route::put('/{guest}',[GuestsController::class,'update'])->name('api.guests.update');
-		Route::delete('/{guest}',[GuestsController::class,'destroy'])->name('api.guests.destroy');
+		Route::get('/',[Admin\GuestsController::class,'index'])->name('api.guests.index');
+		Route::get('/{guest}',[Admin\GuestsController::class,'show'])->name('api.guests.show');
+		Route::post('/',[Admin\GuestsController::class,'store'])->name('api.guests.store');
+		Route::put('/{guest}',[Admin\GuestsController::class,'update'])->name('api.guests.update');
+		Route::delete('/{guest}',[Admin\GuestsController::class,'destroy'])->name('api.guests.destroy');
 	});
 
 	Route::group(['prefix'=>'/invitations'],function(){
