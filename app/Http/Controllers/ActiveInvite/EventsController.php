@@ -8,21 +8,9 @@ use Illuminate\Http\Request;
 
 class EventsController extends Controller
 {
-	public function index()
+	public function show()
 	{
-		$events = config('events',[]);
-		return response()->json($events);
-	}
-
-	public function show($eventId)
-	{
-		$selected = collect(config('events',[]))
-			->first(function($event) use ($eventId) {
-				return $event['id'] == $eventId;
-			});
-
-		$event = new Event($selected);
-		
+		$event = new Event(config('event',[]));
 		return response()->json($event);
 	}
 }

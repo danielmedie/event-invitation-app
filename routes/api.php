@@ -76,10 +76,6 @@ Route::group([
 	Route::post('/logout', [Auth\AuthenticatedInvitationSessionController::class, 'destroy'])
 		->name('invite.logout');
 
-	Route::group(['prefix'=>'/events'],function(){
-		Route::get('/',[EventsController::class,'index'])->name('api.invite.events.index');
-		Route::get('/{event}',[EventsController::class,'show'])->name('api.invite.events.show');
-	});
 	// Get Event
 	Route::get('/event',[ActiveInvite\EventsController::class,'show'])
 		->name('api.invite.event.show');
