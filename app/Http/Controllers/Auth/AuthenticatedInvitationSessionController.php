@@ -22,7 +22,7 @@ class AuthenticatedInvitationSessionController extends Controller
 
 		$invitation = Invitation::getInvitationFromBearerToken($bearerToken);
 
-		$isAuthenticated = Invitation::isAuthenticated($invitation->code, $bearerToken);
+		$isAuthenticated = $invitation && Invitation::isAuthenticated($invitation->code, $bearerToken);
 		
 		if($isAuthenticated && $invitation) {
 			$invitation->load(['guests' => fn($q) => $q->select(['id','name']) ]);
