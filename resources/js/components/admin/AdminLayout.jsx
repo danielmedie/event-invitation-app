@@ -1,22 +1,33 @@
-import React from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 
 function Admin(props) {
-	const { user } = useAuth();
+	const { isLoggedIn, logout, getUser } = useAuth();
+	let navigate = useNavigate();
 
-	const style = ({ isActive }) => ({
-		fontWeight: isActive ? 'bold' : 'normal',
-	});
+	// Update the state
+	useEffect(() => { getUser() }, [])
+	
+	const handleLogout = async (event) => { 
+		event.preventDefault()
+		try {
+			let res = await logout();
+			return navigate('/login', { replace : true })
+		} catch (e) {
+			throw e
+		}
+	}
 
 	return (
 		<div id="admin-app" className="app-page">
 			<h1>Admin</h1>
 
-			{isLoggedIn ? (<div>Is Logged In</div>) : null}
+			{isLoggedIn() ? (<div>Is Logged In</div>) : null}
+
+			<button onClick={handleLogout}>Logout</button>
 			
 			<div>
-				{/* Admin Navigation */}
 				<nav
 					style={{
 						borderBottom: 'solid 1px',
@@ -24,9 +35,10 @@ function Admin(props) {
 					}}
 					>
 					<div className='flex'>
-						<NavLink to="/admin/event" className='mx-auto' style={style}>View the Event</NavLink>
-						<NavLink to="/admin/guests" className='mx-auto' style={style}>Guests</NavLink>
-						<NavLink to="/admin/invitations" className='mx-auto' style={style}>Invitations</NavLink>
+						<NavLink to="/admin" className='mx-auto'>Dashboard</NavLink>
+						<NavLink to="/admin/event" className='mx-auto'>View the Event</NavLink>
+						<NavLink to="/admin/guests" className='mx-auto'>Guests</NavLink>
+						<NavLink to="/admin/invitations" className='mx-auto'>Invitations</NavLink>
 					</div>
 				</nav>
 			</div>

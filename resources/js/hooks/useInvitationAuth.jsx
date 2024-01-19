@@ -1,53 +1,19 @@
-import React, { useState, useContext, createContext, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { InviteRoutes } from '../api/active-invite-api';
-import { useLocation, useNavigate } from "react-router-dom";
+import { redirect } from "react-router-dom";
 
-const invitationAuthContext = createContext()
-
-export const useInvitationAuthContext = () => { 
-	return useContext(invitationAuthContext)
+export const invitationAuthCheckRouteLoader = async () => {
+	try {
+		let { data } = await InviteRoutes.GetInvite()
+		if (!data) {
+			return redirect('/welcome')
+		}
+	} catch (error) {
+		return redirect('/welcome')
+	}
 }
 
 export const useInvitationAuth = () => { 
-	return useInvitationAuthMethods()
-}
-
-export const getInvitationOnMount = () => { 
-	const {getInvitation} = useInvitationAuthMethods()
-	useEffect(() => {
-		(async () => { await getInvitation() })()
-	},[])
-}
-
-export function InvitationAuthWrapper({ children, protect = true }) {
-	const authMethods = useInvitationAuthMethods()
-	const { isLoggedIn } = authMethods
-
-	if (!isLoggedIn) {
-		getInvitationOnMount()
-	}
-	
-	if (protect) {
-		let location = useLocation();
-		const origin = location.state?.from?.pathname || '/';
-		let navigate = useNavigate();
-	
-		if (!isLoggedIn) {
-			return useEffect(() => navigate('/welcome', { from : origin, replace: true } ))
-		}
-	}
-	return <invitationAuthContext.Provider value={authMethods}>{children}</invitationAuthContext.Provider>
-}
-
-export function InvitationAuthProtected({ children }) {
-	return <InvitationAuthWrapper protect={true} children={children} />
-}
-
-export function InvitationAuthPublic({ children }) {
-	return <InvitationAuthWrapper protect={false} children={children} />
-}
-
-function useInvitationAuthMethods() {
 	const [invitation, setInvitation ] = useState(null)
 	const [isLoading, setIsLoading] = useState(null)
 	const [errors, setErrors] = useState([])
@@ -58,13 +24,11 @@ function useInvitationAuthMethods() {
 		try {
 			let { data } = await InviteRoutes.LoginInvite({ code });
 			api().setBearerToken(data.token)
-			await getInvitation();
-			console.log('Invitation Code Valid', data.token);
-			return res
+			let loggedIn = await getInvitation();
+			return loggedIn
 		}
 		catch (error) {
-			setErrors(error.errors)
-			console.error('Invitation could not be logged in', error);
+			setErrors(error.response?.data?.errors)
 			throw error;
 		} finally {
 			setIsLoading(false)
@@ -77,10 +41,10 @@ function useInvitationAuthMethods() {
 		try {
 			await InviteRoutes.LogoutInvite()
 			api().deleteBearerToken()
+			setInvitation(null);
 			return true;
 		} catch (error) {
-			setErrors(error.errors)
-			console.error('Invitation could not be logged out.', error);
+			setErrors(error.response?.data?.errors)
 			throw error;
 		} finally {
 			setIsLoading(false)
@@ -89,22 +53,27 @@ function useInvitationAuthMethods() {
 	
 	async function getInvitation() {
 		try {
-			let { data: invitation } = await InviteRoutes.GetInvite();
-			setInvitation(invitation);
-			console.log('Current Invitation:', invitation);
-			return invitation
+			let { data } = await InviteRoutes.GetInvite();
+			setInvitation(data);
+			return data
 		} catch (error) { }
 	}
 
+	function isLoggedIn() {
+		return !!invitation
+	}
+
 	return {
-		invitation,
+		setInvitation,
 		login,
 		logout,
 		getInvitation,
-		isLoggedIn : !!invitation,
+		isLoggedIn,
 		errors,
-		isLoading
+		setErrors,
+		isLoading,
+		setIsLoading
 	}
 }
 
-export default useInvitationAuthMethods
+export default useInvitationAuth

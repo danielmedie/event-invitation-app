@@ -1,54 +1,17 @@
-import React, { useState, useContext, createContext, useEffect } from "react"
+import { useState } from "react"
 import { LoginRoutes, UserRoutes } from '../api/admin-api';
-import { useLocation, useNavigate } from "react-router-dom";
+import { redirect } from "react-router-dom";
 
-const authContext = createContext()
-
-export const useAuthContext = () => { 
-	return useContext(invitationAuthContext)
-}
-
-export const useAuth = () => { 
-	return useAuthMethods()
-}
-
-export const getUserOnMount = () => { 
-	const {getUser} = useAuthMethods()
-	useEffect(() => {
-		(async () => { await getUser() })()
-	}, [])
-}
-
-export function AuthWrapper({ children, protect = true }) {
-	const authMethods = useAuthMethods()
-	const { isLoggedIn } = authMethods
-
-	if (!isLoggedIn) {
-		getUserOnMount()
+export const authCheckRouteLoader = async () => {
+	try {
+		let { data } = await UserRoutes.ShowUser()
+		return data
+	} catch (error) {
+		return redirect('/login')
 	}
-	
-	if (protect) {
-		let location = useLocation();
-		const origin = location.state?.from?.pathname || '/';
-		let navigate = useNavigate();
-	
-		if (!isLoggedIn) {
-			return useEffect(() => navigate('/login', { from : origin, replace: true } ))
-		}
-	}
-	return <authContext.Provider value={authMethods}>{children}</authContext.Provider>
 }
 
-export function AuthProtected({ children }) {
-	return <AuthWrapper protect={true} children={children} />
-}
-
-export function AuthPublic({ children }) {
-	return <AuthWrapper protect={false} children={children} />
-}
-
-
-function useAuthMethods() {
+export const useAuth = () => {
 	const [user, setUser] = useState(null)
 	const [isLoading, setIsLoading] = useState(null)
 	const [errors, setErrors] = useState([])
@@ -57,14 +20,12 @@ function useAuthMethods() {
 		setErrors([])
 		setIsLoading(true)
 		try {
-			let { data: user } = await LoginRoutes.Login({ email, password })
-			setUser(user);
-			console.log('User Logged in successfully');
-			return res
+			let { data } = await LoginRoutes.Login({ email, password })
+			setUser(data);
+			return data
 		}
 		catch (error) {
-			setErrors(error.errors)
-			console.error('Could not be logged in', error);
+			setErrors(error.response?.data?.errors)
 			throw error;
 		} finally {
 			setIsLoading(false)
@@ -76,11 +37,11 @@ function useAuthMethods() {
 		setIsLoading(true)
 		try {
 			await LoginRoutes.Logout();
+			setUser(null);
 			return true;
 		}
 		catch (error) {
-			setErrors(error.errors)
-			console.error('User could not be logged out.', error);
+			setErrors(error.response?.data?.errors)
 			throw error;
 		} finally {
 			setIsLoading(false)
@@ -89,11 +50,14 @@ function useAuthMethods() {
 
 	async function getUser() {
 		try {
-			let { data: user } = await UserRoutes.ShowUser()
-			setUser(user);
-			console.log('Current Admin User:', user);
+			let { data } = await UserRoutes.ShowUser()
+			setUser(data);
 			return data
 		} catch (error) { }
+	}
+
+	function isLoggedIn() {
+		return !!user
 	}
 
 	return {
@@ -101,9 +65,11 @@ function useAuthMethods() {
 		login,
 		logout,
 		getUser,
-		isLoggedIn: !!user,
+		isLoggedIn,
 		errors,
-		isLoading
+		setErrors,
+		isLoading,
+		setIsLoading
 	}
 }
 
