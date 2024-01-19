@@ -4,11 +4,13 @@ import useInvitationAuth from '../../hooks/useInvitationAuth';
 import { useNavigate } from 'react-router-dom';
 
 function Welcome() {
-	const { invitation, isLoggedIn, logout, getInvitation } = useInvitationAuth();
+	const { getCurrentInvitation, isLoggedIn, logout, getInvitation } = useInvitationAuth();
 	let navigate = useNavigate();
 
 	// Update State
 	useEffect(() => { getInvitation() }, [])
+
+	const invitation = getCurrentInvitation()
 
 	const handleLogout = async (event) => { 
 		event.preventDefault()

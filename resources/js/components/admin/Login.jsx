@@ -4,10 +4,12 @@ import SimpleLayout from '../layouts/SimpleLayout'
 import useAuth from '../../hooks/useAuth';
 
 function Login(props) {
-	const { user, login, errors, setErrors, getUser } = useAuth();
+	const { getCurrentUser, login, errors, setErrors, getUser } = useAuth();
 	let navigate = useNavigate();
 
 	const [credentials, setCredentials] = useState({ email: '', password: '' });
+
+	const user = getCurrentUser()
 
 	// Update State
 	useEffect(() => { getUser() }, [])
