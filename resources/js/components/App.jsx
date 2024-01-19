@@ -6,8 +6,7 @@ import {
 } from 'react-router-dom';
 
 import SimpleLayout from './layouts/SimpleLayout'
-import Login from './auth/Login'
-import Logout from './auth/Logout'
+import Login from './admin/Login'
 import AdminLayout from './admin/AdminLayout'
 import AdminEventView from './admin/events/EventView'
 import AdminGuestsIndex from './admin/guests/GuestsIndex'
@@ -22,6 +21,9 @@ import GuestEvent from './guest/events/Event'
 import GuestRsvp from './guest/rsvp/Rsvp'
 import NoMatch from './NoMatch'
 
+import { AuthProtected } from '../hooks/useAuth';
+import { InvitationAuthPublic, InvitationAuthProtected } from '../hooks/useInvitationAuth';
+
 const App = () => {
 	return (
 		<>
@@ -29,41 +31,37 @@ const App = () => {
 				<Routes>
 					<Route index element={<Navigate to="/welcome" />} />
 
-					<Route path="login" element={<Navigate to="/auth/login" />} />
+					<Route path="login" element={<SimpleLayout><Login /></SimpleLayout>} />
 
-					<Route path="auth" element={<SimpleLayout />}>
-						<Route path="login" element={<Login />} />
-						{/* Protected */}
-						<Route path="logout" element={<Logout/>} /> 
-					</Route>
-					
-					{/* Admin */}
-					<Route path="admin" element={<AdminLayout />}>
+					<Route path="admin" element={<AuthProtected><AdminLayout /></AuthProtected>}>
 						{/* Dasboard */}
-						<Route path="" element={<div>Admin Dashboard</div>} />
+						<Route index element={<div>Admin Dashboard</div>} />
 						{/* Events */}
 						<Route path="event">
-							<Route path="" element={<AdminEventView/>} />
+							<Route path="" element={<AdminEventView />} />
 						</Route>
 						{/* Guests */}
 						<Route path="guests">
-							<Route path="" element={<AdminGuestsIndex />} />
+							<Route index element={<AdminGuestsIndex />} />
 							<Route path="create" element={<AdminGuestCreate />} />
 							<Route path=":guestId" element={<AdminGuestDetail />} />
 						</Route>
 						{/* Invitations */}
 						<Route path="invitations">
-							<Route path="" element={<AdminInvitationsIndex />} />
+							<Route index element={<AdminInvitationsIndex />} />
 							<Route path="create" element={<AdminInvitationCreate />} />
 							<Route path=":invitationId" element={<AdminInvitationDetail />} />
 						</Route>
 					</Route>
-					
+
+
 					{/* Guest/Invite */}
-					<Route element={<GuestLayout />}>
+					<Route element={<InvitationAuthPublic><GuestLayout /></InvitationAuthPublic>}>
 						<Route path="welcome" element={<GuestWelcome />} />
-						<Route path="rsvp" element={<GuestRsvp />} />
-						<Route path="event" element={<GuestEvent />} />
+						<Route path="*" element={<InvitationAuthProtected />}>
+							<Route path="rsvp" element={<GuestRsvp />} />
+							<Route path="event" element={<GuestEvent />} />
+						</Route>
 					</Route>
 
 					<Route path="*" element={<NoMatch />} />

@@ -1,19 +1,25 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
+import { useInvitationAuth } from '../../hooks/useInvitationAuth';
 
-function guest() {
+function guest(props) {
+	const { invitation, isLoggedIn } = useInvitationAuth();
+
 	const style = ({ isActive }) => ({
 		fontWeight: isActive ? 'bold' : 'normal',
 	});
 
 	return (
 		<div id="guest-app" className="app-page">
-			<div className="app-topbar">
-				<div>Active Invite Actions</div>
-			</div>
+			
+			{isLoggedIn ?
+				(<div className="app-topbar">
+					<div>{invitation?.code || 'Active Invite'}</div>
+				</div>) :
+				null
+			}
 
 			<div>
-				{/* Guest Navigation */}
 				<nav
 					style={{
 						borderBottom: 'solid 1px',

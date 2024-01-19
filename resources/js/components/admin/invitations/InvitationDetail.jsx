@@ -1,7 +1,13 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 
 function InvitationDetail() {
-  return (<div>InvitationDetail</div>);
+
+	const { invitationId } = useParams();
+
+	return (
+		<div>InvitationDetail {invitationId}</div>
+	);
 }
 
 export default InvitationDetail;

@@ -1,7 +1,10 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
+import useAuth from '../../hooks/useAuth';
 
-function Admin() {
+function Admin(props) {
+	const { user } = useAuth();
+
 	const style = ({ isActive }) => ({
 		fontWeight: isActive ? 'bold' : 'normal',
 	});
@@ -9,6 +12,8 @@ function Admin() {
 	return (
 		<div id="admin-app" className="app-page">
 			<h1>Admin</h1>
+
+			{isLoggedIn ? (<div>Is Logged In</div>) : null}
 			
 			<div>
 				{/* Admin Navigation */}
