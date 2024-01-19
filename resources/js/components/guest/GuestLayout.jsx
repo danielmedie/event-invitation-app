@@ -3,11 +3,13 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useInvitationAuth } from '../../hooks/useInvitationAuth';
 
 function guest(props) {
-	const { invitation, isLoggedIn, getInvitation } = useInvitationAuth();
+	const { getCurrentInvitation, isLoggedIn, getInvitation } = useInvitationAuth();
 	let navigate = useNavigate();
 
 	// Update the state
 	useEffect(() => { getInvitation() }, [])
+
+	const invitation = getCurrentInvitation()
 
 	const style = ({ isActive }) => ({
 		fontWeight: isActive ? 'bold' : 'normal',
@@ -18,7 +20,7 @@ function guest(props) {
 			
 			{isLoggedIn() ?
 				(<div className="app-topbar">
-					<div>{invitation?.code || 'Active Invite'}</div>
+					<div>{invitation?.to }</div>
 				</div>) :
 				null
 			}

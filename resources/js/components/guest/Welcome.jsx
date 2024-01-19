@@ -3,13 +3,13 @@ import InvitationLogin from './InvitationLogin';
 import useInvitationAuth from '../../hooks/useInvitationAuth';
 
 function Welcome() {
-  const { invitation, isLoggedIn, logout, getInvitation } = useInvitationAuth();
+	const { getCurrentInvitation, isLoggedIn, logout, getInvitation } = useInvitationAuth();
+	let navigate = useNavigate();
 
-  useEffect(() => {
-	getInvitation();
-  }, []);
-  
-  console.log('Invitation:', invitation);  
+	// Update State
+	useEffect(() => { getInvitation() }, [])
+
+	const invitation = getCurrentInvitation()
 
   const handleLogout = async (event) => {
     event.preventDefault();

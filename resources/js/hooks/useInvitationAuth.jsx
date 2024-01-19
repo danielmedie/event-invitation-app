@@ -89,12 +89,17 @@ export const useInvitationAuth = () => {
 	function isLoggedIn() {
 		return !!invitation
 	}
+	
+	function getCurrentInvitation() {
+		return invitation
+	}
 
 	return {
 		setInvitation,
 		login,
 		logout,
 		getInvitation,
+		getCurrentInvitation,
 		isLoggedIn,
 		errors,
 		setErrors,

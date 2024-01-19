@@ -59,12 +59,17 @@ export const useAuth = () => {
 	function isLoggedIn() {
 		return !!user
 	}
+	
+	function getCurrentUser() {
+		return user
+	}
 
 	return {
 		user,
 		login,
 		logout,
 		getUser,
+		getCurrentUser,
 		isLoggedIn,
 		errors,
 		setErrors,
