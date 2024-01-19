@@ -25,8 +25,6 @@ function Login(props) {
 
 	return (
 		<div className="w-full max-w-md m-5">
-			<h2>Invitation Login</h2>
-
 			<form onSubmit={handleInvitationSubmit} className="bg-white border-2 rounded px-8 pt-6 pb-8">
 				<div className="mb-4">
 					<label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="code">
