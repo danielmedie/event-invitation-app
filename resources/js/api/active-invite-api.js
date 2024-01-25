@@ -17,16 +17,24 @@ export const GuestRoutes = {
 	GetGuest: async (guest,args = {}) => {
 		return await api().get(`api/invite/guests/${guest}`,args);
 	},
-	UpdateGuest: async (guest, data = {}) => {
-		return await api().put(`api/invite/guests/${guest}`,data);
-	},
+	UpdateGuest: async (guestId, data = {}) => {
+		return await api().put(`api/invite/guests/${guestId}`, data);
+	  },
 }
+
 
 export const RsvpRoutes = {
 	UpdateRsvpAttendance: async (guest, data = {}) => {
-		return await api().put(`api/invite/rsvp/${guest}//attendance`, data);
+	  return await api().put(`api/invite/rsvp/${guest.id}/attendance`, data);
 	},
-}
+  };
+  
+  export const AllergiesRoutes = {
+	UpdateGuestAllergies: async (guest, data = {}) => {
+	  return await api().put(`api/invite/guests/${guest.id}/allergies`, data);
+	},
+  };
+  
 
 export const EventRoutes = {
 	GetEvent: async (args = {}) => {
@@ -38,5 +46,7 @@ export default {
 	Invite : InviteRoutes,
 	Event : EventRoutes,
 	Guest : GuestRoutes,
-	Rsvp : RsvpRoutes
+	Rsvp : RsvpRoutes,
+	Allergies: AllergiesRoutes
+
 }
