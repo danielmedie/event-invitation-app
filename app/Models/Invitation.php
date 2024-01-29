@@ -37,8 +37,13 @@ class Invitation extends Model
         });
     }
 
+	/**
+	 * Invitations can have mutliple guest connect in the 
+	 * database, but for simplicity the frontend has been 
+	 * limited to only have one guest per invitation.
+	 */
 	public function guests(){
-		return $this->hasMany(Guest::class);
+		return $this->hasOne(Guest::class);
     }
 
     /* ======= Access Token ======= */
