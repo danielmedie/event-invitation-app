@@ -19,6 +19,19 @@ class Guest extends Model
 		'allergies'			=> null,
 	];
 
+	public static function booted() 
+	{
+		static::creating(function(Guest $guest){
+			if(!$guest->invitation_id) {
+				$invitation = new Invitation([
+					'to' => $guest->name
+				]);
+				$invitation->save();
+				$guest->invitation_id = $invitation->id; 
+			}
+		});
+	}
+
 	public function invitation(){
 		return $this->belongsTo(Invitation::class);
     }

@@ -10,7 +10,7 @@ class GuestsController extends Controller
 {
 	public function index()
 	{
-		$guests = Guest::all();
+		$guests = Guest::with('invitation')->get();
 		return response()->json($guests);
 	}
 
