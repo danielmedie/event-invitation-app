@@ -29,12 +29,6 @@ export const RsvpRoutes = {
 	},
   };
   
-  export const AllergiesRoutes = {
-	UpdateGuestAllergies: async (guest, data = {}) => {
-	  return await api().put(`api/invite/guests/${guest.id}/allergies`, data);
-	},
-  };
-  
 
 export const EventRoutes = {
 	GetEvent: async (args = {}) => {
@@ -46,7 +40,5 @@ export default {
 	Invite : InviteRoutes,
 	Event : EventRoutes,
 	Guest : GuestRoutes,
-	Rsvp : RsvpRoutes,
-	Allergies: AllergiesRoutes
-
+	Rsvp : RsvpRoutes
 }

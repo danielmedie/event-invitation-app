@@ -25,7 +25,7 @@ class AuthenticatedInvitationSessionController extends Controller
 		$isAuthenticated = $invitation && Invitation::isAuthenticated($invitation->code, $bearerToken);
 		
 		if($isAuthenticated && $invitation) {
-			$invitation->guests = $invitation->guests()->select(['id','name'])->get();
+			$invitation->guests = $invitation->guests()->select(['id','name','attending','allergies'])->get();
 		}
 
 		return response()->json($isAuthenticated && !!$invitation ? $invitation : false);
