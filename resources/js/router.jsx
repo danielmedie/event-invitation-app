@@ -36,7 +36,7 @@ const router = createBrowserRouter([
 	{
 		path: "/admin",
 		element: <AdminLayout />,
-		// loader: authCheckRouteLoader,
+		loader: authCheckRouteLoader,
 		children: [
 			{
 				path: "",
