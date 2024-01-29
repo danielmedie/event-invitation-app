@@ -1,50 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios'; // Installera och importera Axios
+import axios from 'axios';
+import AddGuestForm from './guests/GuestCreate';
 
 const AdminDashboard = () => {
-  const [invitations, setInvitations] = useState([]);
   const [guests, setGuests] = useState([]);
-  const [events, setEvents] = useState([]);
 
-  // Hämta inbjudningar, gäster och händelser när komponenten mountas
-  useEffect(() => {
-    // fetchInvitations();
-    // fetchGuests();
-    // fetchEvents();
-  }, []);
-
-  const fetchInvitations = async () => {
+  const handleAddGuest = async (newGuest) => {
     try {
-      const response = await axios.get('/api/invitations');
-      setInvitations(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const fetchGuests = async () => {
-    try {
-      const response = await axios.get('/api/guests');
-      setGuests(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const fetchEvents = async () => {
-    try {
-      const response = await axios.get('/api/events');
-      setEvents(response.data);
+      // Skicka den nya gästen till servern
+      const response = await axios.post('/api/guests', newGuest);
+      // Uppdatera gästlistan efter att gästen har lagts till
+      setGuests([...guests, response.data]);
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <div>
-      <h1>Admin Dashboard</h1>
-      {/* Visa inbjudningar, gäster och händelser */}
-      {/* Implementera formulär för att lägga till, uppdatera eller ta bort poster */}
+    <div className="container mx-auto mt-8 p-4 bg-white rounded-lg shadow">
+      <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
+      <AddGuestForm onAddGuest={handleAddGuest} />
     </div>
   );
 };
