@@ -1,15 +1,39 @@
 import React, { useState } from 'react';
+import Swal from 'sweetalert2';
 
 function Event() {
-  const [donationAmount, setDonationAmount] = useState(0);
-  const [cardName, setCardName] = useState('');
-  const [cardNumber, setCardNumber] = useState('');
-  const [expMonth, setExpMonth] = useState('');
-  const [expYear, setExpYear] = useState('');
-  const [cvc, setCvc] = useState('');
+  const initialDonationState = {
+    donationAmount: 0,
+    cardName: '',
+    cardNumber: '',
+    expMonth: '',
+    expYear: '',
+    cvc: '',
+  };
+
+  const [donationInfo, setDonationInfo] = useState({ ...initialDonationState });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setDonationInfo((prevInfo) => ({
+      ...prevInfo,
+      [name]: value,
+    }));
+  };
 
   const handleDonation = async () => {
-    alert(`Tack för din donation på ${donationAmount} kr!`);
+    // Simulera en asynkron operation, som en API-anrop
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Visa SweetAlert
+    Swal.fire({
+      icon: 'success',
+      title: 'Tack!',
+      text: `Tack för din donation på ${donationInfo.donationAmount} kr!`,
+    });
+
+    // Återställ till initiala värden
+    setDonationInfo({ ...initialDonationState });
   };
 
   return (
@@ -31,7 +55,6 @@ function Event() {
         WIE22S Team
       </p>
 
-      {/* Doneraknapp */}
       <div className="mt-6">
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="donationAmount">
           Donera till festkontot:
@@ -40,8 +63,9 @@ function Event() {
           id="donationAmount"
           type="number"
           className="w-full border p-2 rounded mb-2 focus:outline-none focus:shadow-outline"
-          value={donationAmount}
-          onChange={(e) => setDonationAmount(e.target.value)}
+          name="donationAmount"
+          value={donationInfo.donationAmount}
+          onChange={handleInputChange}
           placeholder="Ange belopp (kr)"
         />
 
@@ -52,8 +76,9 @@ function Event() {
           id="cardName"
           type="text"
           className="w-full border p-2 rounded mb-2 focus:outline-none focus:shadow-outline"
-          value={cardName}
-          onChange={(e) => setCardName(e.target.value)}
+          name="cardName"
+          value={donationInfo.cardName}
+          onChange={handleInputChange}
           placeholder="Ange namn på kortet"
         />
 
@@ -64,8 +89,9 @@ function Event() {
           id="cardNumber"
           type="text"
           className="w-full border p-2 rounded mb-2 focus:outline-none focus:shadow-outline"
-          value={cardNumber}
-          onChange={(e) => setCardNumber(e.target.value)}
+          name="cardNumber"
+          value={donationInfo.cardNumber}
+          onChange={handleInputChange}
           placeholder="xxxx xxxx xxxx xxxx"
         />
 
@@ -78,8 +104,9 @@ function Event() {
               id="expMonth"
               type="text"
               className="w-full border p-2 rounded focus:outline-none focus:shadow-outline"
-              value={expMonth}
-              onChange={(e) => setExpMonth(e.target.value)}
+              name="expMonth"
+              value={donationInfo.expMonth}
+              onChange={handleInputChange}
               placeholder="MM"
             />
           </div>
@@ -91,8 +118,9 @@ function Event() {
               id="expYear"
               type="text"
               className="w-full border p-2 rounded focus:outline-none focus:shadow-outline"
-              value={expYear}
-              onChange={(e) => setExpYear(e.target.value)}
+              name="expYear"
+              value={donationInfo.expYear}
+              onChange={handleInputChange}
               placeholder="YY"
             />
           </div>
@@ -105,19 +133,20 @@ function Event() {
           id="cvc"
           type="text"
           className="w-full border p-2 rounded mb-2 focus:outline-none focus:shadow-outline"
-          value={cvc}
-          onChange={(e) => setCvc(e.target.value)}
+          name="cvc"
+          value={donationInfo.cvc}
+          onChange={handleInputChange}
           placeholder="Ange CVC"
         />
 
         <div className="flex justify-center mt-6">
-            <button
-              type="submit"
-              className="bg-green-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            >
-              Skicka RSVP
-            </button>
-          </div>
+          <button
+            onClick={handleDonation}
+            className="bg-green-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          >
+            Donera
+          </button>
+        </div>
       </div>
     </div>
   );
