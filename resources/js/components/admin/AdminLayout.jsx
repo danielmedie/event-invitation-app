@@ -38,7 +38,7 @@ function Admin(props) {
 						<NavLink to="/admin" className='mx-auto'>Dashboard</NavLink>
 						<NavLink to="/admin/event" className='mx-auto'>View the Event</NavLink>
 						<NavLink to="/admin/guests" className='mx-auto'>Guests</NavLink>
-						<NavLink to="/admin/invitations" className='mx-auto'>Invitations</NavLink>
+						{/* <NavLink to="/admin/invitations" className='mx-auto'>Invitations</NavLink> */}
 					</div>
 				</nav>
 			</div>

@@ -22,7 +22,7 @@ function GuestLayout(props) {
 
       {isLoggedIn() ? (
         <div className="app-topbar">
-          <div>{invitation?.to}</div>
+          {/* <div>{invitation?.to}</div> */}
         </div>
       ) : null}
 

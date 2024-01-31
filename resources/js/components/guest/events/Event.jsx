@@ -22,6 +22,23 @@ function Event() {
   };
 
   const handleDonation = async () => {
+    // Enkel validering
+    if (
+      !donationInfo.donationAmount ||
+      !donationInfo.cardName ||
+      !donationInfo.cardNumber ||
+      !donationInfo.expMonth ||
+      !donationInfo.expYear ||
+      !donationInfo.cvc
+    ) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Felaktig inmatning',
+        text: 'Vänligen fyll i alla fält.',
+      });
+      return;
+    }
+
     // Simulera en asynkron operation, som en API-anrop
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
