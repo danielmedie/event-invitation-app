@@ -42,30 +42,6 @@ export const GuestRoutes = {
     }
 }
 
-// Importera och exportera API-funktioner och routedefinitioner för inbjudningar
-export const InvitationRoutes = {
-    // Hämta alla inbjudningar
-    GetInvitations: async (args = {}) => {
-        return await api().get('/api/invitations', args);
-    },
-    // Hämta information om en specifik inbjudan
-    GetInvitation: async (invitation, args = {}) => {
-        return await api().get(`/api/invitations/${invitation}`, args);
-    },
-    // Skapa en ny inbjudan
-    CreateInvitation: async ({ invitation }) => {
-        return await api().post('/api/invitations', invitation);
-    },
-    // Uppdatera information om en specifik inbjudan
-    UpdateInvitation: async (invitation, data = {}) => {
-        return await api().put(`/api/invitations/${invitation}`, data);
-    },
-    // Ta bort en specifik inbjudan
-    DeleteInvitation: async ({ invitation }) => {
-        return await api().delete(`/api/invitations/${invitation}`);
-    }
-}
-
 // Importera och exportera API-funktioner och routedefinitioner för evenemang
 export const EventRoutes = {
     // Hämta information om evenemanget
@@ -79,6 +55,5 @@ export default {
     User: UserRoutes,
     Login: LoginRoutes,
     Guest: GuestRoutes,
-    Invitation: InvitationRoutes,
     Event: EventRoutes
 }

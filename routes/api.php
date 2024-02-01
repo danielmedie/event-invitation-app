@@ -39,20 +39,6 @@ Route::group(['middleware'=>'auth:web'],function(){
 		Route::delete('/{guest}',[Admin\GuestsController::class,'destroy'])->name('api.guests.destroy');
 	});
 
-	// Admin Invitation CRUD
-	Route::group(['prefix'=>'/invitations'],function(){
-		Route::get('/',[Admin\InvitationsController::class,'index'])
-			->name('api.invitations.index');
-		Route::get('/{invitation}',[Admin\InvitationsController::class,'show'])
-			->name('api.invitations.show');
-		Route::post('/',[Admin\InvitationsController::class,'store'])
-			->name('api.invitations.store');
-		Route::put('/{invitation}',[Admin\InvitationsController::class,'update'])
-			->name('api.invitations.update');
-		Route::delete('/{invitation}',[Admin\InvitationsController::class,'destroy'])
-			->name('api.invitations.destroy');
-	});
-
 	// Get the hard-coded event
 	Route::get('/event',[Admin\EventsController::class,'show'])
 		->name('api.event.show');
