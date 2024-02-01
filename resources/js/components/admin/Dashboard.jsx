@@ -17,7 +17,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="container mx-auto mt-8 p-4 bg-white rounded-lg shadow">
+    <div className="flex flex-col items-center justify-center h-screen">
       <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
       <AddGuestForm onAddGuest={handleAddGuest} />
     </div>

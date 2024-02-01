@@ -46,7 +46,7 @@ function Login(props) {
 	return (
 		<SimpleLayout>
 			<div className="w-full max-w-md m-5">
-				<h2>Admin Login</h2>
+				<h2>Admin inloggning</h2>
 
 				<form onSubmit={handleLoginSubmit} className="bg-white border-2 rounded px-8 pt-6 pb-8 mt-4">
 					<div className="mb-4">
@@ -64,7 +64,7 @@ function Login(props) {
 					</div>
 					<div className="mb-4">
 						<label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-							Password
+							Lösenord
 						</label>
 						<input
 							className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -80,7 +80,7 @@ function Login(props) {
 							className="bg-blue-500 hover.bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
 							type="submit"
 						>
-							Login Admin
+							Logga in som admin
 						</button>
 					</div>
 					{errors?.email ? <div className="my-2 text-sm text-red-500">{errors?.email}</div> : null}

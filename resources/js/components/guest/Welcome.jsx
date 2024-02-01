@@ -35,14 +35,13 @@ function Welcome() {
                 onClick={handleLogout}
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               >
-                Logout
+                Logga ut
               </button>
             </div>
           </>
         ) : (
           <InvitationLogin />
         )}
-        {/* <div className="mt-4">Current: {JSON.stringify(invitation)}</div> */}
       </div>
     </div>
   );

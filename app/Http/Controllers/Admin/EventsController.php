@@ -8,9 +8,13 @@ use Illuminate\Http\Request;
 
 class EventsController extends Controller
 {
-	public function show()
-	{
-		$event = new Event(config('event',[]));
-		return response()->json($event);
-	}
+    // Visar information om det aktuella evenemanget
+    public function show()
+    {
+        // Skapar en ny händelse (Event) med konfigurationsdata från config('event', [])
+        $event = new Event(config('event', []));
+
+        // Returnerar informationen om evenemanget som JSON
+        return response()->json($event);
+    }
 }

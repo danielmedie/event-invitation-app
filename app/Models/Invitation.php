@@ -12,155 +12,149 @@ use Laravel\Sanctum\{HasApiTokens, NewAccessToken, PersonalAccessToken};
 
 class Invitation extends Model
 {
-    use HasFactory,
-		HasApiTokens;
-	
-	const TOKEN_NAME = 'invitation_token';
-	const TOKEN_ABILITIES = ['invitation'];
-	const TOKEN_EXPIRE_DAYS = 90;
+    use HasFactory, HasApiTokens;
 
-	protected $guarded = [];
+    const TOKEN_NAME = 'invitation_token';
+    const TOKEN_ABILITIES = ['invitation'];
+    const TOKEN_EXPIRE_DAYS = 90;
 
-	protected $attributes = [
-		'code'			=> '',
-		'to'			=> '',
-		'message'		=> null
-	];
+    // Tillåt alla fält att massassignment
+    protected $guarded = [];
 
-	public static function booted()
+    // Standardvärden för inbjudningsattributen
+    protected $attributes = [
+        'code'      => '',
+        'to'        => '',
+        'message'   => null,
+    ];
+
+    // Utför åtgärder när Invitation-modellen startas
+    public static function booted()
     {
-        static::creating(function(Invitation $invitation)
-        {
-			if(!$invitation->code) {
-				$invitation->code = str()->random(6);
-			}
+        static::creating(function (Invitation $invitation) {
+            // Om ingen kod anges generera en slumpmässig kod
+            if (!$invitation->code) {
+                $invitation->code = Str::random(6);
+            }
         });
     }
 
-	/**
-	 * Invitations can have mutliple guest connect in the 
-	 * database, but for simplicity the frontend has been 
-	 * limited to only have one guest per invitation.
-	 */
-	public function guests(){
-		return $this->hasOne(Guest::class);
+    // Relation mellan inbjudan och gäster
+    public function guests()
+    {
+        return $this->hasOne(Guest::class);
     }
 
     /* ======= Access Token ======= */
 
-	/**
-	 * Check if they are autheticated
-	 * 
-	 * If the are sending a valid bearer token and it is related to an
-	 * invitation that matches the code, then it is authenticated
-	 */
-	public static function isAuthenticated(string $code, ?string $bearerToken = null) : bool
-	{
-		// No Bearer Token, not authenticated
-		if(!$bearerToken) {
-			return false;
-		}
+    /**
+     * Kontrollera om användaren är autentiserad
+     * 
+     * Om en giltig Bearer Token skickas och är relaterad till en
+     * inbjudan med matchande kod, anses användaren autentiserad.
+     */
+    public static function isAuthenticated(string $code, ?string $bearerToken = null): bool
+    {
+        // Ingen Bearer Token, ej autentiserad
+        if (!$bearerToken) {
+            return false;
+        }
 
-		// Get the Token
-		$token = self::getAccessTokenFromBearerToken($bearerToken);
-		if(!$token) {
-			return false;
-		}
+        // Hämta token
+        $token = self::getAccessTokenFromBearerToken($bearerToken);
+        if (!$token) {
+            return false;
+        }
 
-		// Get invitation on Token
-		$invitation = $token->tokenable;
-		if($invitation->code != $code) {
-			return false;
-		}
+        // Hämta inbjudan kopplad till token
+        $invitation = $token->tokenable;
+        if ($invitation->code != $code) {
+            return false;
+        }
 
-		// If we have a token and it or the cokie is expired delete it
-		if($token && $token->expires_at->isPast()) {
-			$token->delete();
-			return false;
-		}
+        // Om token eller kakan har gått ut radera den
+        if ($token && $token->expires_at->isPast()) {
+            $token->delete();
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * Authenticate an invitation
-	 * 
-	 * If the code connects to an invitation that exists, then we create
-	 * a new Access token and return int
-	 */
-	public static function authenticateWithCode(string $code = null) : NewAccessToken
-	{
-		// Validate
-		Validator::make(
-			[ 'code' => $code ?? ''],
-			[ 'code' => 'required|string']
-		)->validate();
+    /**
+     * Autentisera en inbjudan
+     * 
+     * Om koden matchar en befintlig inbjudan skapas en ny
+     * åtkomsttoken och returneras.
+     */
+    public static function authenticateWithCode(string $code = null): NewAccessToken
+    {
+        // Validera koden
+        Validator::make(
+            ['code' => $code ?? ''],
+            ['code' => 'required|string']
+        )->validate();
 
-		$invitation = Invitation::where('code', $code)->first() ?? null;
-		if(!$invitation) {
-			throw ValidationException::withMessages(['code' => ['Valid Invitation not found.']]);
-		}
-		
-		$newToken = self::createNewAccessToken($invitation);
-		return $newToken;
-	}
+        $invitation = Invitation::where('code', $code)->first() ?? null;
+        if (!$invitation) {
+            throw ValidationException::withMessages(['code' => ['Giltig inbjudan hittades inte.']]);
+        }
 
-	/**
-	 * Create Token for Authentication
-	 * 
-	 * Passing an invtation will create a new access token for the invitation
-	 * Unencrypted token can be access with `plainTextToken`
-	 */
-	public static function createNewAccessToken(Invitation $invitation) : NewAccessToken
-	{
-		return $invitation->createToken(self::TOKEN_NAME,self::TOKEN_ABILITIES,Carbon::now()->addDays(self::TOKEN_EXPIRE_DAYS));
-	}
+        $newToken = self::createNewAccessToken($invitation);
+        return $newToken;
+    }
 
-	/**
-	 * Delete Tokens for specific invitation
-	 */
-	public static function deleteAccessTokensOnInvitation(Invitation $invitation)
-	{
-		PersonalAccessToken::where('name',self::TOKEN_NAME)
-			->whereHasMorph('tokenable',[Invitation::class], fn($q) => $q->where('id',$invitation->id))
-			->delete();
-	}
+    /**
+     * Skapa en ny åtkomsttoken för inbjudan
+     */
+    public static function createNewAccessToken(Invitation $invitation): NewAccessToken
+    {
+        return $invitation->createToken(self::TOKEN_NAME, self::TOKEN_ABILITIES, Carbon::now()->addDays(self::TOKEN_EXPIRE_DAYS));
+    }
 
-	/**
-	 * Get Personal Access Token From Bearer Token
-	 * 
-	 * Use the bearer token to find the Access Token in the database
-	 */
-	public static function getAccessTokenFromBearerToken(string $bearerToken) : ?PersonalAccessToken
-	{
-		if(Str::contains($bearerToken,'|')) {
-			[$tokenId, $token] = explode('|', $bearerToken, 2);
-			$bearerToken = $token;
-		}
-		return PersonalAccessToken::where('token', hash('sha256', $bearerToken))->first() ?? null;
-	}
+    /**
+     * Radera åtkomsttoken för en specifik inbjudan
+     */
+    public static function deleteAccessTokensOnInvitation(Invitation $invitation)
+    {
+        PersonalAccessToken::where('name', self::TOKEN_NAME)
+            ->whereHasMorph('tokenable', [Invitation::class], fn ($q) => $q->where('id', $invitation->id))
+            ->delete();
+    }
 
-	/**
-	 * Use the bearer token to find the invition its connected to
-	 */
-	public static function getInvitationFromBearerToken(?string $bearerToken = null) : ?static
-	{
-		if(!$bearerToken) {
-			return null;
-		}
+    /**
+     * Hämta åtkomsttoken från Bearer Token
+     */
+    public static function getAccessTokenFromBearerToken(string $bearerToken): ?PersonalAccessToken
+    {
+        if (Str::contains($bearerToken, '|')) {
+            [$tokenId, $token] = explode('|', $bearerToken, 2);
+            $bearerToken = $token;
+        }
+        return PersonalAccessToken::where('token', hash('sha256', $bearerToken))->first() ?? null;
+    }
 
-		// Get Token
-		$accessToken = self::getAccessTokenFromBearerToken($bearerToken);
-		if(!$accessToken) {
-			return null;
-		}
-		
-		// Get Invitation from Token
-		$invitation = $accessToken->tokenable;
-		if(!$invitation instanceof Invitation) {
-			return null;
-		}
+    /**
+     * Hämta inbjudan från Bearer Token
+     */
+    public static function getInvitationFromBearerToken(?string $bearerToken = null): ?static
+    {
+        if (!$bearerToken) {
+            return null;
+        }
 
-		return $invitation;
-	}
+        // Hämta Token
+        $accessToken = self::getAccessTokenFromBearerToken($bearerToken);
+        if (!$accessToken) {
+            return null;
+        }
+
+        // Hämta inbjudan från token
+        $invitation = $accessToken->tokenable;
+        if (!$invitation instanceof Invitation) {
+            return null;
+        }
+
+        return $invitation;
+    }
 }

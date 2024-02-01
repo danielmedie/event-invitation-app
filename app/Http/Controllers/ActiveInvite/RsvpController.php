@@ -13,42 +13,46 @@ use Illuminate\Validation\ValidationException;
 
 class RsvpController extends Controller
 {
-	/**
-     * Update the eventInvite
+    /**
+     * Uppdatera eventinbjudningen
      */
     public function update(Request $request, Guest $guest)
     {
-		$invitation = Invitation::getInvitationFromBearerToken($request->bearerToken());
-		$guest = $invitation->guests()->where('guests.id',$guest->id)->first();
+        // Hämta den aktiva inbjudan
+        $invitation = Invitation::getInvitationFromBearerToken($request->bearerToken());
+        $guest = $invitation->guests()->where('guests.id', $guest->id)->first();
 
-		// Check if the guest being updated is on this invitation
-		Gate::allowIf(fn() => !!$guest);
-		
-		// Get the Event
-		$event = new Event(config('event',[]));
+        // Kontrollera om den gäst som uppdateras är kopplad till den här inbjudan
+        Gate::allowIf(fn() => !!$guest);
 
-		if(!$event->event_date) {
-			throw ValidationException::withMessages(['event_date' => 'Unable to set RSVP when there is no date for the event.']);
-		}
-		if(!$event->rsvp_date) {
-			throw ValidationException::withMessages(['rsvp_date' => 'Unable to set RSVP at this time.']);
-		}
-		if(Carbon::parse($event->rsvp_date)->isPast()) {
-			throw ValidationException::withMessages(['rsvp_date' => 'RSVP date has passed.']);
-		}
+        // Hämta evenemanget
+        $event = new Event(config('event', []));
 
-		$validated = $request->validate([
-			'attending' => [
-				'boolean',
-				'present',
-				'nullable',
-			],
-		]);
+        // Validera evenemanget och rsvp-datumet
+        if (!$event->event_date) {
+            throw ValidationException::withMessages(['event_date' => 'Det går inte att sätta RSVP när det inte finns något datum för evenemanget.']);
+        }
+        if (!$event->rsvp_date) {
+            throw ValidationException::withMessages(['rsvp_date' => 'Det går inte att sätta RSVP för tillfället.']);
+        }
+        if (Carbon::parse($event->rsvp_date)->isPast()) {
+            throw ValidationException::withMessages(['rsvp_date' => 'RSVP-datumet har passerat.']);
+        }
 
-		$guest->update($validated);
+        // Validera indata
+        $validated = $request->validate([
+            'attending' => [
+                'boolean',
+                'present',
+                'nullable',
+            ],
+        ]);
 
-		// Set Values we dont want to show to the user
-		$guest->setHidden(['updated_at','created_at','invitation_id']);
+        // Uppdatera gästen med de validerade värdena
+        $guest->update($validated);
+
+        // Dölj vissa värden som inte ska visas för användaren
+        $guest->setHidden(['updated_at', 'created_at', 'invitation_id']);
 
         return response()->json($guest);
     }

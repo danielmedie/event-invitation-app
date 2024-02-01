@@ -10,56 +10,65 @@ use Illuminate\Support\Facades\Gate;
 
 class GuestsController extends Controller
 {
-	/**
-     * Display list of guests on active invitation
+    /**
+     * Visa listan över gäster på den aktiva inbjudan
      */
     public function index(Request $request)
     {
-		// Get the Invitation being used
-		$invitation = Invitation::getInvitationFromBearerToken($request->bearerToken());
+        // Hämta den aktiva inbjudan
+        $invitation = Invitation::getInvitationFromBearerToken($request->bearerToken());
 
-		$guests = $invitation->guests()->get()->map->setHidden(['updated_at','created_at','invitation_id']);
-		
-		return response()->json($guests);
+        // Hämta gästerna och dölj vissa attribut
+        $guests = $invitation->guests()->get()->map->setHidden(['updated_at', 'created_at', 'invitation_id']);
+
+        return response()->json($guests);
     }
 
     /**
-     * Display specified guest on active inviation
+     * Visa en specifik gäst på den aktiva inbjudan
      */
     public function show(Request $request, Guest $guest)
     {
-		$invitation = Invitation::getInvitationFromBearerToken($request->bearerToken());
-		$guest = $invitation->guests()->where('guests.id',$guest->id)->first();
+        // Hämta den aktiva inbjudan
+        $invitation = Invitation::getInvitationFromBearerToken($request->bearerToken());
 
-		// Check if the guest being queried is on this invitation
-		Gate::allowIf(fn() => !!$guest);
+        // Hämta den specifika gästen för den här inbjudan
+        $guest = $invitation->guests()->where('guests.id', $guest->id)->first();
 
-		// Set Values we dont want to show to the user
-		$guest->setHidden(['updated_at','created_at','invitation_id']);
+        // Kontrollera om den frågade gästen är kopplad till den här inbjudan
+        Gate::allowIf(fn() => !!$guest);
+
+        // Dölj vissa värden som inte ska visas för användaren
+        $guest->setHidden(['updated_at', 'created_at', 'invitation_id']);
 
         return response()->json($guest);
     }
 
-	/**
-     * Update a guest on active invitation
+    /**
+     * Uppdatera en gäst på den aktiva inbjudan
      */
     public function update(Request $request, Guest $guest)
     {
-		$invitation = Invitation::getInvitationFromBearerToken($request->bearerToken());
-		$guest = $invitation->guests()->where('guests.id',$guest->id)->first();
+        // Hämta den aktiva inbjudan
+        $invitation = Invitation::getInvitationFromBearerToken($request->bearerToken());
 
-		// Check if the guest being updated is on this invitation
-		Gate::allowIf(fn() => !!$guest);
+        // Hämta den specifika gästen för den här inbjudan
+        $guest = $invitation->guests()->where('guests.id', $guest->id)->first();
 
-		$validated = $request->validate([
-			'allergies' => ['nullable','string','max:2048']
-		]);
+        // Kontrollera om den gäst som uppdateras är kopplad till den här inbjudan
+        Gate::allowIf(fn() => !!$guest);
 
-    	$guest->update($validated);
+        // Validera indata
+        $validated = $request->validate([
+            'allergies' => ['nullable', 'string', 'max:2048']
+        ]);
 
-		// Set Values we dont want to show to the user
-		$guest->setHidden(['updated_at','created_at','invitation_id']);
-        
-		return response()->json($guest);
+        // Uppdatera gästen med de validerade värdena
+        $guest->update($validated);
+
+        // Dölj vissa värden som inte ska visas för användaren
+        $guest->setHidden(['updated_at', 'created_at', 'invitation_id']);
+
+        return response()->json($guest);
     }
 }

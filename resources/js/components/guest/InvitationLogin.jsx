@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import useInvitationAuth from '../../hooks/useInvitationAuth';
-// import { InviteRoutes } from '../api/active-invite-api';
 
 function Login(props) {
 	const { invitation, login, errors, setErrors, getInvitation } = useInvitationAuth();
@@ -28,13 +27,13 @@ function Login(props) {
 			<form onSubmit={handleInvitationSubmit} className="bg-white border-2 rounded px-8 pt-6 pb-8">
 				<div className="mb-4">
 					<label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="code">
-						Code
+						Logga in med din kod
 					</label>
 					<input
 						className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 						id="code"
 						type="text"
-						placeholder="Code"
+						placeholder="Kod"
 						value={code}
 						onChange={(e) => setCode(e.target.value)}
 					/>
@@ -44,7 +43,7 @@ function Login(props) {
 						className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
 						type="submit"
 					>
-						Login with Code
+						Logga in med kod
 					</button>
 				</div>
 				{errors?.code ? <div className="my-2 text-sm text-red-500">{errors?.code}</div> : null}

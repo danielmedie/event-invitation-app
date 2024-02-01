@@ -22,7 +22,6 @@ function GuestLayout(props) {
 
       {isLoggedIn() ? (
         <div className="app-topbar">
-          {/* <div>{invitation?.to}</div> */}
         </div>
       ) : null}
 
@@ -35,7 +34,7 @@ function GuestLayout(props) {
             }}
           >
             <div className='flex'>
-              <NavLink to="/welcome" className='mx-auto' style={style}>Welcome</NavLink>
+              <NavLink to="/welcome" className='mx-auto' style={style}>Välkommen</NavLink>
               <NavLink to="/rsvp" className='mx-auto' style={style}>RSVP</NavLink>
               <NavLink to="/event" className='mx-auto' style={style}>Event</NavLink>
             </div>

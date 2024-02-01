@@ -21,29 +21,26 @@ function Admin(props) {
 
 	return (
 		<div id="admin-app" className="app-page">
-			<h1>Admin</h1>
-
-			{isLoggedIn() ? (<div>Is Logged In</div>) : null}
-
-			<button onClick={handleLogout}>Logout</button>
+		<div className="flex justify-between">
+			<button
+				onClick={handleLogout}
+				className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+			>
+				Logga ut
+			</button>
+			</div>
 			
 			<div>
-				<nav
-					style={{
-						borderBottom: 'solid 1px',
-						paddingBottom: '1rem',
-					}}
-					>
+				<nav className="border-b pb-4">
 					<div className='flex'>
 						<NavLink to="/admin" className='mx-auto'>Dashboard</NavLink>
-						<NavLink to="/admin/event" className='mx-auto'>View the Event</NavLink>
-						<NavLink to="/admin/guests" className='mx-auto'>Guests</NavLink>
-						{/* <NavLink to="/admin/invitations" className='mx-auto'>Invitations</NavLink> */}
+						<NavLink to="/admin/event" className='mx-auto'>Event</NavLink>
+						<NavLink to="/admin/guests" className='mx-auto'>Gäster</NavLink>
 					</div>
 				</nav>
 			</div>
 
-			<main id="content" style={{ padding: '1rem 0' }}>
+			<main id="content" className="p-4">
 				<div id="content-inner">
 					<Outlet />
 				</div>
