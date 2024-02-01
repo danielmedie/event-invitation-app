@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\ActiveInvite;
 
 use App\Http\Controllers\Controller;
-use App\Models\Event;
 use App\Models\Guest;
 use App\Models\Invitation;
 use Carbon\Carbon;
@@ -24,20 +23,6 @@ class RsvpController extends Controller
 
         // Kontrollera om den gäst som uppdateras är kopplad till den här inbjudan
         Gate::allowIf(fn() => !!$guest);
-
-        // Hämta evenemanget
-        $event = new Event(config('event', []));
-
-        // Validera evenemanget och rsvp-datumet
-        if (!$event->event_date) {
-            throw ValidationException::withMessages(['event_date' => 'Det går inte att sätta RSVP när det inte finns något datum för evenemanget.']);
-        }
-        if (!$event->rsvp_date) {
-            throw ValidationException::withMessages(['rsvp_date' => 'Det går inte att sätta RSVP för tillfället.']);
-        }
-        if (Carbon::parse($event->rsvp_date)->isPast()) {
-            throw ValidationException::withMessages(['rsvp_date' => 'RSVP-datumet har passerat.']);
-        }
 
         // Validera indata
         $validated = $request->validate([

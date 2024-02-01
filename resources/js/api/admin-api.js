@@ -42,18 +42,9 @@ export const GuestRoutes = {
     }
 }
 
-// Importera och exportera API-funktioner och routedefinitioner för evenemang
-export const EventRoutes = {
-    // Hämta information om evenemanget
-    GetEvent: async (args = {}) => {
-        return await api().get(`/api/event`, args);
-    },
-}
-
 // Exportera alla routedefinitioner inom respektive kategori
 export default {
     User: UserRoutes,
     Login: LoginRoutes,
     Guest: GuestRoutes,
-    Event: EventRoutes
 }

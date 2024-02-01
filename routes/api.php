@@ -38,10 +38,6 @@ Route::group(['middleware'=>'auth:web'],function(){
 		Route::put('/{guest}',[Admin\GuestsController::class,'update'])->name('api.guests.update');
 		Route::delete('/{guest}',[Admin\GuestsController::class,'destroy'])->name('api.guests.destroy');
 	});
-
-	// Get the hard-coded event
-	Route::get('/event',[Admin\EventsController::class,'show'])
-		->name('api.event.show');
 	
 });
 
@@ -61,10 +57,6 @@ Route::group([
 	// Logout
 	Route::post('/logout', [Auth\AuthenticatedInvitationSessionController::class, 'destroy'])
 		->name('invite.logout');
-
-	// Get Event
-	Route::get('/event',[ActiveInvite\EventsController::class,'show'])
-		->name('api.invite.event.show');
 
 	// Update Guest Allergies
 	Route::get('/guests',[ActiveInvite\GuestsController::class,'index'])

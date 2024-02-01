@@ -68,24 +68,4 @@ class ActiveInviteAttendanceTest extends TestCase
 		$res = $this->putJson(route('api.invite.guests.attendance', [$guestOnOtherInvite]),['attending' => true])	
 			->assertForbidden();
 	}
-
-	/** @test */
-	public function cannot_save_rsvp_response_if_rsvp_date_has_passed()
-	{
-		$invitation = $this->makeInvitationAndAuthenticate();
-
-		$guestOnActiveInvite = Guest::factory()
-			->for($invitation)
-			->create(['attending' => null]);
-
-		// Temporarily update Event RSVP
-		config([
-			'event.event_date' => Carbon::now()->addMonths(2),
-			'event.rsvp_date' => Carbon::now()->subMonths(1),
-		]);
-
-		$res = $this->putJson(route('api.invite.guests.attendance', [$guestOnActiveInvite]),['attending' => true])	
-			->assertStatus(422)
-			->assertJsonValidationErrorFor('rsvp_date');
-	}
 }

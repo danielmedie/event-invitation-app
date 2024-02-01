@@ -38,18 +38,9 @@ export const RsvpRoutes = {
     },
 };
 
-// Importera och exportera API-funktioner och routedefinitioner för evenemang
-export const EventRoutes = {
-    // Hämta information om evenemanget
-    GetEvent: async (args = {}) => {
-        return await api().get(`/api/invite/event/`, args);
-    },
-}
-
 // Exportera alla routedefinitioner inom respektive kategori
 export default {
     Invite: InviteRoutes,
-    Event: EventRoutes,
     Guest: GuestRoutes,
     Rsvp: RsvpRoutes,
 }
