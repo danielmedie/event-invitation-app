@@ -16,23 +16,23 @@ class CreateUser extends Command
 {
 
 	/**
-	 * The name and signature of the console command.
+	 * Namnet och signatur på konsolkommandot.
 	 *
 	 * @var string
 	 */
 	protected $signature = 'user:create 
-		{--name= : Inject the new users name} 
-		{--email= : Inject the new users email} 
-		{--password= : Inject the new users password}
-		{--E|verify-email : Mark email as verified} 
-		{--F|force : Do not confirm, just do it ;)}';
+		{--name= : Inmatning av det nya användarnamnet} 
+		{--email= : Inmatning av den nya användarens e-postadress} 
+		{--password= : Inmatning av det nya användarens lösenord}
+		{--E|verify-email : Markera e-posten som verifierad} 
+		{--F|force : Bekräfta utan att bekräfta, bara gör det ;)}';
 
 	/**
-	 * The console command description.
+	 * Beskrivning av konsolkommandot.
 	 *
 	 * @var string
 	 */
-	protected $description = 'Create a user';
+	protected $description = 'Skapa en användare';
 
    	protected array $options;
 
@@ -55,21 +55,21 @@ class CreateUser extends Command
 		return [
 
             'name' => $this->options['name'] ?: text(
-                label: 'Name',
+                label: 'Namn',
                 required: true,
             ),
 
             'email' => $this->options['email'] ?: text(
-                label: 'Email address',
+                label: 'E-postadress',
                 required: true,
                 validate: fn (string $email): ?string => match (true) {
-                    ! filter_var($email, FILTER_VALIDATE_EMAIL) => 'The email address must be valid.',
+                    ! filter_var($email, FILTER_VALIDATE_EMAIL) => 'E-postadressen måste vara giltig.',
                     default => null,
                 },
             ),
 
             'password' => Hash::make($this->options['password'] ?: password(
-                label: 'Password',
+                label: 'Lösenord',
                 required: true,
             )),
         ];
@@ -83,55 +83,55 @@ class CreateUser extends Command
 		$user->name = $this->userData['name'];
 		$user->email_verified_at = null;
 
-		// Enial
+		// E-post
 		$user->email = $this->userData['email'] ?? null;
 
-		// Password
+		// Lösenord
 		$user->password = $this->userData['password'];
 
-		// Confirm
+		// Bekräfta
 		$confirmed = !!$this->options['force'] ?: confirm(
-			label: 'Save this user?',
+			label: 'Spara denna användare?',
 			default: true
 		);
 		if(!$confirmed) {
-			$this->error('Cancelled!');
+			$this->error('Avbröts!');
 			return null;
 		}
 
 		$exists = User::whereEmail($user->email)->first();
 
-		// user is not exisiting yet, just create and return
+		// Användaren existerar inte ännu, skapa och returnera bara
 		if ($exists === null) { 
 			$user->save();
-			$this->info('Created a user with id: ' . $user->id);
+			$this->info('Skapade en användare med id: ' . $user->id);
 
 			if($user instanceof MustVerifyEmail) {
 				if(!!$this->options['verify-email'] ?: confirm(
-					label: 'Verify Email',
+					label: 'Verifiera e-posten',
 					default: true
 				)) {
 					$user->forceFill(['email_verified_at' => now()])->save();
 				}
 			}
 
-			// Event
+			// Händelse
 			event(new Registered($user));
 			return $user;
 		}
 
-		// user is already existing, check the input and handle
+		// Användaren existerar redan, kontrollera inmatningen och hantera
 		if ($confirmed) {
 			if ($exists->update($user->getAttributes())) {
-				$this->info('Updated an existing user with id: ' . $exists->id);
+				$this->info('Uppdaterade en befintlig användare med id: ' . $exists->id);
 				return $exists;
 			}
 
-			$this->warn('Updating an existing user with id: ' . $exists->id . ' ended with errors');
+			$this->warn('Uppdatering av en befintlig användare med id: ' . $exists->id . ' slutade med fel');
 			return $exists;
 		}
 
-		$this->error('User already exist with id: ' . $exists->id);
+		$this->error('Användaren finns redan med id: ' . $exists->id);
 		return $user;
     }
 

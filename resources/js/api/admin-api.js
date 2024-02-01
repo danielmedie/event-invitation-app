@@ -14,7 +14,7 @@ export const LoginRoutes = {
     },
     // Logga ut
     Logout: async () => {
-        return await api().post('api/logout');
+        return await api().post('/api/logout');
     },
 }
 

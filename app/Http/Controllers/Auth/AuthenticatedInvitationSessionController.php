@@ -11,76 +11,86 @@ use Illuminate\Validation\ValidationException;
 class AuthenticatedInvitationSessionController extends Controller
 {
 	/**
-	 * Get Invitation if set
+	 * Hämta inbjudan om den är satt
 	 *
      * @param  \Illuminate\Http\Request  $request
      * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	public function show(Request $request)
 	{
+		// Hämta bärande token från förfrågan
 		$bearerToken = $request->bearerToken();
 
+		// Hämta inbjudan baserat på bärande token
 		$invitation = Invitation::getInvitationFromBearerToken($bearerToken);
 
+		// Kontrollera om inbjudningen är autentiserad
 		$isAuthenticated = $invitation && Invitation::isAuthenticated($invitation->code, $bearerToken);
 		
-		if($isAuthenticated && $invitation) {
+		// Om autentiserad, hämta gäster för inbjudningen
+		if ($isAuthenticated && $invitation) {
 			$invitation->guests = $invitation->guests()->select(['id','name','attending','allergies'])->get();
 		}
 
+		// Returnera JSON-svar baserat på autentisering och inbjudningens status
 		return response()->json($isAuthenticated && !!$invitation ? $invitation : false);
 	}
 	
 	/**
-	 * Attempt to authenticate an invitation with bearer token.
+	 * Försök att autentisera en inbjudan med bärande token.
 	 *
      * @param  \Illuminate\Http\Request  $request
      * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	public function store(Request $request)
 	{
+		// Validera inkommande data (endast inbjudningskoden krävs)
 		$request->validate(['code' => 'required|string']);
 
+		// Hämta bärande token från förfrågan
 		$bearerToken = $request->bearerToken();
 
-		// Check if they are already authenticated (request with valid token)
+		// Kontrollera om användaren redan är autentiserad (förfrågan med giltig token)
 		$isAuthenticated = Invitation::isAuthenticated($request->code, $bearerToken);
 
-		//
+		// Försök autentisera med inbjudningskoden om inte redan autentiserad
 		try {
-			// if not authenticated, attempt to Authenticate with code
-			if(!$isAuthenticated) {
+			if (!$isAuthenticated) {
+				// Försök autentisera med kod och hämta bärande token
 				$token = Invitation::authenticateWithCode($request->code);
 				$bearerToken = $token->plainTextToken;
 			}
 
-			// Return unencrypted
-			return response()->json([ 'token' => $bearerToken ]);
-		} 
-		catch (Exception $e) {
+			// Returnera oavkrypterad token
+			return response()->json(['token' => $bearerToken]);
+		} catch (Exception $e) {
+			// Kasta undantag om autentiseringen misslyckas
 			throw ValidationException::withMessages([
 				'code' => ['Invitation code not found.'],
 			]);
 		}
-
 	}
 
     /**
-     * Destroy an invitations access Tokens.
+     * Ta bort inbjudningens åtkomsttoken.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function destroy(Request $request)
     {
+		// Hämta inbjudning baserat på bärande token
 		$invitation = Invitation::getInvitationFromBearerToken($request->bearerToken());
 
-		if(!$invitation) {
+		// Kasta undantag om inbjudningen inte hittas
+		if (!$invitation) {
 			throw ValidationException::withMessages(['code' => ['Invitation code not found.']]);
 		}
 
+		// Ta bort alla åtkomsttoken för inbjudningen
 		Invitation::deleteAccessTokensOnInvitation($invitation);
 
+		// Returnera inget innehåll (204 No Content)
 		return response()->noContent();
     }
 }

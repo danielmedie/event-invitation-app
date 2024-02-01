@@ -5,6 +5,8 @@ import Swal from 'sweetalert2';
 
 function AdminComponent() {
   const [guests, setGuests] = useState([]);
+  const [comingGuestsCount, setComingGuestsCount] = useState(0);
+
 
   useEffect(() => {
     fetchGuests();
@@ -14,10 +16,15 @@ function AdminComponent() {
     try {
       const response = await axios.get('/api/guests');
       setGuests(response.data);
+  
+      // Räkna antalet gäster som kommer
+      const comingGuests = response.data.filter((guest) => guest.attending);
+      setComingGuestsCount(comingGuests.length);
     } catch (error) {
       console.error(error);
     }
   };
+  
 
   const handleDeleteGuest = async (guestId) => {
     // Visa en SweetAlert för bekräftelse
@@ -60,7 +67,10 @@ function AdminComponent() {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Gäster</h1>
-      <button><Link to={`/admin`} className="text-blue-500 underline">Lägg till gäst</Link></button>
+        <p className="mb-4">Antal gäster som kommer: {comingGuestsCount}</p>
+        <button><Link to={`/admin`} className="text-blue-500 underline">Lägg till gäst</Link></button>
+
+
 
       <table className="min-w-full bg-white border border-gray-300">
         <thead>
@@ -69,7 +79,7 @@ function AdminComponent() {
             <th className="border border-gray-300 py-2 px-4">Namn</th>
             <th className="border border-gray-300 py-2 px-4">Namnbricka</th>
             <th className="border border-gray-300 py-2 px-4">Inbjudnigskod</th>
-            <th className="border border-gray-300 py-2 px-4">Kommer</th> {/* Ny kolumn för "Kommer" */}
+            <th className="border border-gray-300 py-2 px-4">Kommer</th>
 
             <th className="border border-gray-300 py-2 px-4">Åtgärder</th>
           </tr>
@@ -81,8 +91,7 @@ function AdminComponent() {
               <td className="border border-gray-300 py-2 px-4">{guest.name}</td>
               <td className="border border-gray-300 py-2 px-4">{guest.name_tag}</td>
               <td className="border border-gray-300 py-2 px-4">{guest.invitation ? guest.invitation.code : 'N/A'}</td>
-              <td className="border border-gray-300 py-2 px-4">{guest.attending ? 'Ja' : 'Nej'}</td> {/* Använder attending för att visa om gästen kommer */}
-
+              <td className="border border-gray-300 py-2 px-4">{guest.attending ? 'Ja' : 'Nej'}</td> 
               <td className="border border-gray-300 py-2 px-4">
                 <Link to={`/admin/guests/${guest.id}`} className="text-blue-500 underline">
                   Visa detaljer

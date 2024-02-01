@@ -6,28 +6,28 @@ use App\Models\Invitation;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 
-use function Laravel\Prompts\{text,confirm};
+use function Laravel\Prompts\{text, confirm};
 
 class CreateInvitation extends Command
 {
 
 	/**
-	 * The name and signature of the console command.
+	 * Namnet och signatur på konsolkommandot.
 	 *
 	 * @var string
 	 */
 	protected $signature = 'invitation:create 
-		{--to= : Who is thie invitation for?} 
-		{--code= : Code for invitation}
-		{--message= : Message for invitation} 
-		{--F|force : Do not confirm, just do it ;)}';
+		{--to= : Vem är inbjudan för?} 
+		{--code= : Kod för inbjudan}
+		{--message= : Meddelande för inbjudan} 
+		{--F|force : Bekräfta utan att bekräfta, bara gör det ;)}';
 
 	/**
-	 * The console command description.
+	 * Beskrivning av konsolkommandot.
 	 *
 	 * @var string
 	 */
-	protected $description = 'Create an invitation';
+	protected $description = 'Skapa en inbjudan';
 
    	protected array $options;
 
@@ -50,20 +50,20 @@ class CreateInvitation extends Command
 		return [
 
             'to' => $this->options['to'] ?: text(
-                label: 'To',
+                label: 'Till',
                 required: true,
             ),
             'code' => $this->options['code'] ?: text(
-                label: 'Invitation Code',
+                label: 'Inbjudningskod',
                 required: true,
                 validate: fn (string $code): ?string => match (true) {
-                    strtolower($code) != ($test = Str::of($code)->slug('-')) => 'The code must be a slug. eg: '.$test,
+                    strtolower($code) != ($test = Str::of($code)->slug('-')) => 'Koden måste vara en slug. t.ex: '.$test,
                     default => null,
                 },
             ),
             
 			'message' => $this->options['message'] ?: text(
-                label: 'Invitation Message',
+                label: 'Inbjudningsmeddelande',
             ),
 
         ];
@@ -78,36 +78,36 @@ class CreateInvitation extends Command
 		$invitation->code = $this->invitationData['code'];
 		$invitation->message = $this->invitationData['message'] ?? null;
 
-		// Confirm
+		// Bekräfta
 		$confirmed = !!$this->options['force'] ?: confirm(
-			label: 'Save this invitation?',
+			label: 'Spara denna inbjudan?',
 			default: true
 		);
 		if(!$confirmed) {
-			$this->error('Cancelled!');
+			$this->error('Avbröts!');
 			return null;
 		}
 
 		$exists = Invitation::whereCode($invitation->code)->first();
 
-		// invitation is not exisiting yet, just create and return
+		// Inbjudan existerar inte ännu, skapa och returnera bara
 		if ($exists === null) { 
 			$invitation->save();
-			$this->info('Created a invitation with id: ' . $invitation->id);
+			$this->info('Skapade en inbjudan med id: ' . $invitation->id);
 			return $invitation;
 		}
 
-		// invitation is already existing, check the input and handle
+		// Inbjudan existerar redan, kontrollera inmatningen och hantera
 		if ($confirmed) {
 			if ($exists->update($invitation->getAttributes())) {
-				$this->info('Updated an existing invitation with id: ' . $exists->id);
+				$this->info('Uppdaterade en befintlig inbjudan med id: ' . $exists->id);
 				return $exists;
 			}
-			$this->warn('Updating an existing invitation with id: ' . $exists->id . ' ended with errors');
+			$this->warn('Uppdatering av en befintlig inbjudan med id: ' . $exists->id . ' slutade med fel');
 			return $exists;
 		}
 
-		$this->error('Invitation already exist with id: ' . $exists->id);
+		$this->error('Inbjudan finns redan med id: ' . $exists->id);
 		return $invitation;
     }
 
