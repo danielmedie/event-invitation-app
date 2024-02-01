@@ -21,21 +21,18 @@ function Admin(props) {
 
 	return (
 		<div id="admin-app" className="app-page">
-		<div className="flex justify-between">
-			<button
-				onClick={handleLogout}
-				className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-			>
-				Logga ut
-			</button>
-			</div>
-			
 			<div>
-				<nav className="border-b pb-4">
+				<nav className="border-b py-2">
 					<div className='flex'>
 						<NavLink to="/admin" className='mx-auto'>Dashboard</NavLink>
 						<NavLink to="/admin/event" className='mx-auto'>Event</NavLink>
 						<NavLink to="/admin/guests" className='mx-auto'>Gäster</NavLink>
+						<button
+							onClick={handleLogout}
+							className="mx-auto text-red-500 text:bg-red-700 font-bold focus:outline-none focus:shadow-outline"
+							>
+							Logga ut
+						</button>
 					</div>
 				</nav>
 			</div>
