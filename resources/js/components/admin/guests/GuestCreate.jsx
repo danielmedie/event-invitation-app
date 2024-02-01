@@ -48,6 +48,7 @@ const AddGuestForm = ({ onAddGuest }) => {
 
   return (
     <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-8 p-6 bg-white border border-gray-300 shadow-md rounded-md">
+	  <h1 className="text-2xl font-bold mb-4">Lägg till gäst</h1>
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
           Namn:

@@ -2,15 +2,15 @@
 export const InviteRoutes = {
     // Hämta inbjudningsinformation
     GetInvite: async (data = {}) => {
-        return await api().get('api/invite/login/show', data);
+        return await api().get('/api/invite/login/show', data);
     },
     // Logga in med inbjudningsinformation
     LoginInvite: async (data = {}) => {
-        return await api().post('api/invite/login', data);
+        return await api().post('/api/invite/login', data);
     },
     // Logga ut från inbjudning
     LogoutInvite: async () => {
-        return await api().post('api/invite/logout');
+        return await api().post('/api/invite/logout');
     },
 }
 
@@ -18,15 +18,15 @@ export const InviteRoutes = {
 export const GuestRoutes = {
     // Hämta alla gäster
     GetGuests: async (args = {}) => {
-        return await api().get('api/invite/guests', args);
+        return await api().get('/api/invite/guests', args);
     },
     // Hämta information om en specifik gäst
     GetGuest: async (guest, args = {}) => {
-        return await api().get(`api/invite/guests/${guest}`, args);
+        return await api().get(`/api/invite/guests/${guest}`, args);
     },
     // Uppdatera information om en specifik gäst
     UpdateGuest: async (guestId, data = {}) => {
-        return await api().put(`api/invite/guests/${guestId}`, data);
+        return await api().put(`/api/invite/guests/${guestId}`, data);
     },
 }
 
@@ -34,7 +34,7 @@ export const GuestRoutes = {
 export const RsvpRoutes = {
     // Uppdatera deltagandestatus för en gäst
     UpdateRsvpAttendance: async (guest, data = {}) => {
-        return await api().put(`api/invite/rsvp/${guest.id}/attendance`, data);
+        return await api().put(`/api/invite/rsvp/${guest.id}/attendance`, data);
     },
 };
 
@@ -42,7 +42,7 @@ export const RsvpRoutes = {
 export const EventRoutes = {
     // Hämta information om evenemanget
     GetEvent: async (args = {}) => {
-        return await api().get(`api/invite/event/`, args);
+        return await api().get(`/api/invite/event/`, args);
     },
 }
 

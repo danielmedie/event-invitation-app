@@ -1,25 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import AddGuestForm from './guests/GuestCreate';
+import useAuth from '../../hooks/useAuth';
+import { Link } from 'react-router-dom';
 
 const AdminDashboard = () => {
-  const [guests, setGuests] = useState([]);
-
-  const handleAddGuest = async (newGuest) => {
-    try {
-      // Skicka den nya gästen till servern
-      const response = await axios.post('/api/guests', newGuest);
-      // Uppdatera gästlistan efter att gästen har lagts till
-      setGuests([...guests, response.data]);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const { getCurrentUser, getUser } = useAuth();
+  
+  useEffect(() => { getUser() }, [])
+  const user = getCurrentUser()
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
-      <AddGuestForm onAddGuest={handleAddGuest} />
+	  <p>Hej {user?.name}</p>
+	  <p><strong>Email</strong>: {user?.email}</p>
+	  <p className='mt-2'>Visa vilka gäster som kommer på <Link to={`/admin/guests`} className="text-blue-500 underline">gästsidan</Link></p>
     </div>
   );
 };

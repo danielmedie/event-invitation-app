@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { InvitationRoutes } from '../../../api/admin-api'
 
 function InvitationsIndex() {
   const [invitations, setInvitations] = useState([]);
@@ -10,7 +10,7 @@ function InvitationsIndex() {
 
   const fetchInvitations = async () => {
     try {
-      const response = await axios.get('/api/invitations');
+      const response = await InvitationRoutes.GetInvitations('/api/invitations');
       setInvitations(response.data);
     } catch (error) {
       console.error(error);

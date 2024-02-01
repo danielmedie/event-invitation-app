@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { GuestRoutes } from '../../../api/admin-api'
 
 function AdminGuestDetail() {
   const { guestId } = useParams();
@@ -18,7 +19,7 @@ function AdminGuestDetail() {
 
   const fetchGuestDetails = async () => {
     try {
-      const response = await axios.get(`/api/guests/${guestId}`);
+	  const response = await GuestRoutes.GetGuest(guestId)
       setGuest(response.data);
       setEditedGuest({
         name: response.data.name,
@@ -32,7 +33,7 @@ function AdminGuestDetail() {
 
   const handleUpdateGuest = async () => {
     try {
-      await axios.put(`/api/guests/${guestId}`, editedGuest);
+	  await GuestRoutes.UpdateGuest(guestId,editedGuest)
       console.log('Guest information updated successfully!');
       // Visa SweetAlert när uppdateringen är klar
       Swal.fire({
@@ -84,13 +85,13 @@ function AdminGuestDetail() {
       </div>
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-600">Allergier:</label>
-        <input
+        <textarea
           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
           type="text"
           name="allergies"
           value={editedGuest.allergies}
           onChange={handleInputChange}
-        />
+        ></textarea>
       </div>
       <button
         className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"

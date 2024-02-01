@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { GuestRoutes } from '../../../api/admin-api'
 
 function AdminComponent() {
   const [guests, setGuests] = useState([]);
@@ -14,7 +14,7 @@ function AdminComponent() {
 
   const fetchGuests = async () => {
     try {
-      const response = await axios.get('/api/guests');
+      const response = await GuestRoutes.GetGuests();
       setGuests(response.data);
   
       // Räkna antalet gäster som kommer
@@ -43,7 +43,7 @@ function AdminComponent() {
     if (result.isConfirmed) {
       try {
         // Skicka ett DELETE-anrop till API för att ta bort gästen med det angivna ID:et
-        await axios.delete(`/api/guests/${guestId}`);
+        await GuestRoutes.DeleteGuest({ guest : guestId });
         // Uppdatera gästlistan efter borttagningen
         fetchGuests();
         // Visa en SweetAlert för att informera om att borttagningen är klar
@@ -68,7 +68,7 @@ function AdminComponent() {
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Gäster</h1>
         <p className="mb-4">Antal gäster som kommer: {comingGuestsCount}</p>
-        <button><Link to={`/admin`} className="text-blue-500 underline">Lägg till gäst</Link></button>
+        <button><Link to={`/admin/guests/create`} className="text-blue-500 underline">Lägg till gäst</Link></button>
 
 
 
@@ -91,7 +91,7 @@ function AdminComponent() {
               <td className="border border-gray-300 py-2 px-4">{guest.name}</td>
               <td className="border border-gray-300 py-2 px-4">{guest.name_tag}</td>
               <td className="border border-gray-300 py-2 px-4">{guest.invitation ? guest.invitation.code : 'N/A'}</td>
-              <td className="border border-gray-300 py-2 px-4">{guest.attending ? 'Ja' : 'Nej'}</td> 
+              <td className="border border-gray-300 py-2 px-4">{guest.attending == null ? 'Inväntar svar' : (guest.attending ? 'Ja' : 'Nej')}</td> 
               <td className="border border-gray-300 py-2 px-4">
                 <Link to={`/admin/guests/${guest.id}`} className="text-blue-500 underline">
                   Visa detaljer
