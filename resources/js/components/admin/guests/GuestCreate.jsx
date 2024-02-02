@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { GuestRoutes } from '../../../api/admin-api' 
 
-const AddGuestForm = ({ onAddGuest }) => {
+const AddGuestForm = () => {
   const [name, setName] = useState('');
   const [nameTag, setNameTag] = useState('');
   const [invitationId, setInvitationId] = useState(null);
