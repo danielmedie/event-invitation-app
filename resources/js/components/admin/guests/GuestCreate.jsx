@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
+import { GuestRoutes } from '../../../api/admin-api' 
 
 const AddGuestForm = ({ onAddGuest }) => {
   const [name, setName] = useState('');
@@ -20,7 +21,7 @@ const AddGuestForm = ({ onAddGuest }) => {
 
     try {
       // Anropa överordnad komponentfunktionen för att lägga till gästen
-      await onAddGuest(newGuest);
+	  await GuestRoutes.CreateGuest({ guest : newGuest });
 
       // Visa en SweetAlert för att informera om att gästen har lagts till
       Swal.fire({
